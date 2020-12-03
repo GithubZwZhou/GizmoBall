@@ -28,11 +28,13 @@ import java.util.*;
  *
  * @author <a href="mail to: 10185101124@stu.ecnu.edu.cn" rel="nofollow">周政伟</a>
  * @update [1][2020-11-27 19:10] [周政伟][创建]
+ * @update [2][2020-12-03 15:03] [周政伟][修改 position 属性]
  */
 public class Board implements Iterable<Gizmo>{
     public static final String rcsId = "202011271247";
     private Display displayMode;
-    private Vector<Integer> maxDims;
+    private int maxDimX;
+    private int maxDimY;
     private Vector<Float> friction;
     private double gravity;
     private KeyboardInput inputMode;
@@ -44,7 +46,7 @@ public class Board implements Iterable<Gizmo>{
      * Creates a board by passing in all existing member variables.
      * * If friction or dimensions do not meet their specified capacities default values of
      * *  (0.025/s,0.025/L) and (20,20) respectively are used.
-     * @param maxDims: the x, y max coordinates
+     * @param maxDimX, maxDimY: the x, y max coordinates
      * @param gravity: coefficient of gravity
      * @param friction: coefficient of friction
      * @param displayMode: which display to be used (ascii, gl, etc)
@@ -53,18 +55,17 @@ public class Board implements Iterable<Gizmo>{
      * @effects: Creates a new Board
      * @modifies: All member variables
      */
-    public Board(Vector<Integer> maxDims, double gravity,
+    public Board(int maxDimX, int maxDimY, double gravity,
                  Vector<Float> friction, Display displayMode, KeyboardInput inputMode){
         assert (gravity > 0.0);
         assert (displayMode != null && inputMode != null);
 
-        if(maxDims.capacity() == 2) {
-            assert (maxDims.get(0) > 0 && maxDims.get(1) > 0);
-            this.maxDims = maxDims;
+        if(maxDimX > 0 && maxDimY > 0) {
+            this.maxDimX = maxDimX;
+            this.maxDimY = maxDimY;
         } else {
-            this.maxDims = new Vector<>(2, 0);
-            this.maxDims.add(20);
-            this.maxDims.add(20);
+            this.maxDimX = 20;
+            this.maxDimY = 20;
         }
 
         this.gravity = gravity;
@@ -135,8 +136,8 @@ public class Board implements Iterable<Gizmo>{
      * @throws NonUniqueGizmoNameException: if someone tries to add a gizmo that does not have a unique name.
      */
     public boolean addGizmo(Gizmo gizmo) throws NonUniqueGizmoNameException, OverlapException {
-        assert (gizmo.getPosition().get(0) < maxDims.get(0));
-        assert (gizmo.getPosition().get(1) < maxDims.get(1));
+        assert (gizmo.getPosX() < maxDimX);
+        assert (gizmo.getPosY() < maxDimY);
 
         if(!isNameUnique(gizmo.getName())){
             throw new NonUniqueGizmoNameException();
@@ -231,7 +232,7 @@ public class Board implements Iterable<Gizmo>{
      * @return: true if xyMaxDims are all > 0, inputMode != null, displayMode != null, boardClock != null
      */
     public boolean isBoardReady(){
-        return maxDims.get(0) > 0 && maxDims.get(1) > 0 && inputMode != null && displayMode != null && boardClock != null;
+        return maxDimX > 0 && maxDimY > 0 && inputMode != null && displayMode != null && boardClock != null;
     }
 
     /**
@@ -273,12 +274,18 @@ public class Board implements Iterable<Gizmo>{
         return this;
     }
 
-    public Vector<Integer> getMaxDims(){
-        return this.maxDims;
+    public int getMaxDimX(){
+        return this.maxDimX;
     }
 
-    public Board setMaxDims(Vector<Integer> maxDims){
-        this.maxDims = maxDims;
+    public int getMaxDimY(){
+        return this.maxDimY;
+    }
+
+    public Board setMaxDims(int maxDimX, int maxDimY){
+        assert (maxDimX > 0 && maxDimY > 0);
+        this.maxDimX = maxDimX;
+        this.maxDimY = maxDimY;
         return this;
     }
 

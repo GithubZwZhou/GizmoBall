@@ -22,26 +22,26 @@ public enum Orient {
 
     /**
      * 使用 位运算 计算三角形的理论正方形的位置。
-     * @param prePos: 三角形的位置。
+     * @param prePosX, prePosY: 三角形的位置。
      * @param new_size: 理论正方形的大小，即 三角形大小 & 理论正方形边长 的 1/2。
      * @return: 新的存储理论正方形位置的向量。
      */
-    Vector<Float> dealPosForTriangular(Vector<Float> prePos, float new_size){
+    Vector<Float> dealPosForTriangular(float prePosX, float prePosY, float new_size){
         Vector<Float> pos = new Vector<>();
-        pos.set(0, prePos.get(0) + new_size * ((index & 1) == 1 ? -1 : 1));
-        pos.set(1, prePos.get(1) + new_size * ((index & 2) == 2 ? -1 : 1));
+        pos.set(0, prePosX + new_size * ((index & 1) == 1 ? -1 : 1));
+        pos.set(1, prePosY + new_size * ((index & 2) == 2 ? -1 : 1));
         return pos;
     }
 
     /**
      * 计算弯轨道的理论正方形的位置。
-     * @param prePos: 弯轨道的位置。
+     * @param prePosX, prePosY: 弯轨道的位置。
      * @return: 新的存储理论正方形位置的向量。
      */
-    Vector<Float> dealPosForBentRail(Vector<Float> prePos){
+    Vector<Float> dealPosForBentRail(float prePosX, float prePosY){
         Vector<Float> pos = new Vector<>();
-        pos.set(0, prePos.get(0) + (float) 1.5);
-        pos.set(1, prePos.get(1) + (float) 1.5);
+        pos.set(0, prePosX + (float) 1.5);
+        pos.set(1, prePosY + (float) 1.5);
         return pos;
     }
 }

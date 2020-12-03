@@ -2,8 +2,6 @@ package entity;
 
 import exception.OverlapException;
 
-import java.util.Vector;
-
 /**
  * 项目名称: GizmoBall
  * 创建时间: 2020/11/27
@@ -15,45 +13,64 @@ import java.util.Vector;
  * @update [1][2020-11-27 18:07] [周政伟][创建]
  * @update [2][2020-11-28 12:07] [周政伟][修改物理属性(大小、方向)，删除属性(速度)]
  * @update [3][2020-11-28 14:53] [周政伟][将方向属性分离为子类，大小分离为子类]
+ * @update [4][2020-12-03 15:03] [周政伟][修改 position 属性]
  */
 public abstract class Gizmo implements TriggerListener, TriggerGenerator{
     protected static final float DEFAULT_SIZE = 1;
 
-    private double reflectionCoefficient = 0.0; // 摩擦系数
+    protected double reflectionCoefficient = 0.0; // 摩擦系数
     protected float size = DEFAULT_SIZE; // 组件的大小
 
-    private String name = null; // 名称
+    protected String name = null; // 名称
+    // 组件的 基点位置
+    protected float posX;
+    protected float posY;
 
-    protected Vector<Float> position = null; // 组件的 基点位置
     protected Board parentBoard = null;
+
+    /**
+     * @param otherGizmo: an instantiated Gizmo
+     * @return: Whether we are close enough to otherGizmo to start doing real math.
+     */
+    public abstract boolean proximate(Gizmo otherGizmo);
+
+    /**
+     * @return: the Help text associated with this Gizmo,
+     * a paragraph-size String formatted in plain text with no line-breaks.
+     */
+    public abstract String helpText();
 
     /**
      * 对没有添加到 Board 中的组件设置位置（只用于初始化）。
      */
-    public Gizmo setPosition(Vector<Float> position){
-        this.position = new Vector<>(position);
+    public Gizmo setPosition(float posX, float posY){
+        assert (posX > 0 && posY > 0);
+        this.posX = posX;
+        this.posY = posY;
         return this;
     }
 
     /**
      * Move the Gizmo to the absolute position specified if no overlapping happens,
         otherwise, recover to the previous position.
-     * @param position: a Vector<Float>  with capacity of 2.
+     * @param posX, posY: position.
      * @modifies: this.position
      */
-    public void moveTo(Vector<Float> position) throws OverlapException {
-        assert (position.capacity() == 2);
-        assert (position.get(0) > 0 && position.get(1) > 0);
+    public void moveTo(float posX, float posY) throws OverlapException {
+        assert (posX > 0 && posY > 0);
 
         parentBoard.removeGizmo(this);
 
-        Vector<Float> prePos = position;
-        this.position = position;
+        float old_x = this.posX, old_y = this.posY;
+
+        this.posX = posX;
+        this.posY = posY;
 
         try{
             parentBoard.addGizmo(this);
         } catch (OverlapException e){
-            this.position = prePos;
+            this.posX = old_x;
+            this.posY = old_y;
             try {
                 parentBoard.addGizmo(this);
             }catch (Exception exception){
@@ -129,12 +146,16 @@ public abstract class Gizmo implements TriggerListener, TriggerGenerator{
         // 俩者都是 不可定向（对称）组件。
         float sizeSum = this.size + otherGizmo.size;
         // x 反向重叠 && y方向重叠
-        return Math.abs(this.position.get(0) - otherGizmo.position.get(0)) < sizeSum
-                    && (Math.abs(this.position.get(1) - otherGizmo.position.get(1)) < sizeSum);
+        return Math.abs(this.posX - otherGizmo.posX) < sizeSum
+                    && (Math.abs(this.posY - otherGizmo.posY) < sizeSum);
     }
 
-    public Vector<Float> getPosition(){
-        return this.position;
+    public float getPosX(){
+        return this.posX;
+    }
+
+    public float getPosY(){
+        return this.posY;
     }
 
     public double getReflectionCoefficient(){

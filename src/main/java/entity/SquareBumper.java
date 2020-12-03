@@ -28,4 +28,14 @@ public class SquareBumper extends Gizmo{
     public void trigger(TriggerGenerator trigger) {
 
     }
+
+    @Override
+    public boolean proximate(Gizmo otherGizmo) {
+        return false;
+    }
+
+    @Override
+    public String helpText() {
+        return null;
+    }
 }

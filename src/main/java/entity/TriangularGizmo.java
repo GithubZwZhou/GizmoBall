@@ -18,8 +18,8 @@ public abstract class TriangularGizmo extends OrientatableGizmo{
     @Override
     public boolean isOverlapped(Gizmo otherGizmo) {
         Gizmo replaceGizmo = new SquareBumper();
-        replaceGizmo.setSize(size / 2)
-                .setPosition(orient.dealPosForTriangular(position, size/2));
+        Vector<Float> pos = orient.dealPosForTriangular(posX, posY, size/2);
+        replaceGizmo.setSize(size / 2).setPosition(pos.get(0), pos.get(1));
         return replaceGizmo.isOverlapped(otherGizmo);
     }
 }

@@ -11,7 +11,7 @@ import exception.OverlapException;
  * @update [1][2020-11-28 14:41] [周政伟][创建]
  */
 public abstract class OrientatableGizmo extends Gizmo{
-    private static final Orient DEFAULT_ORIENT = Orient.RIGHT_UP_WARD; // 默认在 基点的右上方放置。
+    protected static final Orient DEFAULT_ORIENT = Orient.RIGHT_UP_WARD; // 默认在 基点的右上方放置。
 
     protected Orient orient = DEFAULT_ORIENT; // 方向
 
@@ -22,7 +22,7 @@ public abstract class OrientatableGizmo extends Gizmo{
     /**
      * Set the orientation of the Gizmo, if applicable.
      */
-    public void setOrient(Orient orient) throws OverlapException{
+    public void changeOrient(Orient orient) throws OverlapException{
         this.parentBoard.removeGizmo(this);
         Orient preOrient = this.orient;
         this.orient = orient;
