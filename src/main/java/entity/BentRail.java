@@ -22,6 +22,16 @@ public class BentRail extends OrientatableGizmo implements UnResizable{
         this.size = 3;
     }
 
+    @Override
+    public boolean proximate(Gizmo otherGizmo) {
+        return false;
+    }
+
+    @Override
+    public String helpText() {
+        return null;
+    }
+
     /**
      * 对弯曲轨道组件的重叠处理，将其视为一个 3*3 的正方形。
      * @param otherGizmo: 与之比较的另一个组件。
